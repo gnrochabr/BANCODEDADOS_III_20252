@@ -22,8 +22,9 @@
 | `   { idDoador: 1, nomDoador: 1, ` | **Projeção:** Inclui o código e nome (`1`). |
 | `     "enderecoDoador.dscCidadeDoador": 1, ` | Inclui a cidade, usando **ponto-notação** para campos dentro do array de endereço. |
 | `     "enderecoDoador.dscUFDoador": 1, indTipoSangDoador: 1, _id: 0 ` | Inclui o estado e o tipo sanguíneo, e **exclui** o campo `_id` (`0`). |
-| **Comando Completo** | 
 
+| **Comando Completo** | 
+javascript'''
 
 db.doador.find(
 {
@@ -41,7 +42,7 @@ indTipoSangDoador: 1,
 \_id: 0
 }
 )
-
+'''
 ````|
 
 ---
