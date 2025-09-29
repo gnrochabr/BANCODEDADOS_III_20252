@@ -145,35 +145,47 @@ db.doador.find(
   }
 )
 ```
+## 6. Pesquisar se é possível selecionar o segundo lanche do doador que teve mais de dois lanches, utilizando o comando `find`.
 
-### 6. Pesquisar se é possível selecionar o **segundo lanche** do doador que teve mais de dois lanches, utilizando o comando `find`.
+**Resposta**:
+**Não é possível** com o `db.collection.find()` puro, pois ele não suporta a lógica de filtragem complexa de tamanho (`$gt` em `$size`) nem a projeção de elementos específicos do array por índice (`$arrayElemAt`). É necessário o **Aggregation Framework** (`.aggregate()`). |
 
 | Comando | Explicação |
 | :--- | :--- |
-| **Resposta** | **Não é possível** com o `db.collection.find()` simples, pois a projeção em `find` só inclui ou exclui campos inteiros, não permitindo extrair elementos específicos de um array por índice. Isso exige o **Aggregation Framework** (`.aggregate()`). |
-| **Demonstração (Aggregation):** | *(Exemplo para demonstrar a solução com o comando correto - aggregate)* |
 | `db.doador.aggregate([` | Inicia o pipeline de agregação. |
-| `  { $match: { "dscLancheDoador": { $size: { $gt: 2 } } } },` | **Estágio 1 (`$match`):** Filtra doadores onde o tamanho do array (`$size`) do lanche é maior que (`$gt`) 2. |
-| `  { $project: {` | **Estágio 2 (`$project`):** Remodela o documento. |
-| `    segundoLanche: { $arrayElemAt: ["$dscLancheDoador", 1] },` | Usa o operador **`$arrayElemAt`** para criar um novo campo chamado `segundoLanche`, extraindo o elemento no **índice 1** (o segundo item). |
-| `    idDoador: 1, nomDoador: 1, _id: 0` | Inclui os demais campos. |
+| `  { $addFields: { lanchesValidos: { $ifNull: ["$dscLancheDoador", []] } } },` | **Estágio 1 (`$addFields`):** Cria o campo temporário `lanchesValidos`. O operador **`$ifNull`** garante que, se `dscLancheDoador` for nulo ou ausente, ele seja tratado como um **array vazio `[]`**, prevenindo o erro de `$size`. |
+| `  { $match: { $expr: { $gt: [ { $size: "$lanchesValidos" }, 2 ] } } },` | **Estágio 2 (`$match`):** Filtra doadores. O **`$expr`** permite a comparação (`$gt`) entre o **tamanho** (`$size`) do array e o número `2`. |
+| `  { $project: {` | **Estágio 3 (`$project`):** Remodela o documento final. |
+| `    segundoLanche: { $arrayElemAt: ["$dscLancheDoador", 1] },` | Usa o operador **`$arrayElemAt`** para criar o campo `segundoLanche`, extraindo o elemento no **índice 1** (o segundo item). |
+| `    idDoador: 1, nomDoador: 1, dscEmailDoador: 1, ...` | Inclui outros campos. |
 
 **Comando Completo**
 ```js
-// Resposta: Não é possível com find(). O correto seria:
 db.doador.aggregate([
-  { $match: { "dscLancheDoador": { $size: { $gt: 2 } } } },
-  {
-    $project: {
-      _id: 0,
-      idDoador: 1,
-      nomDoador: 1,
-      dscEmailDoador: 1,
-      cidade: { $arrayElemAt: ["$enderecoDoador.dscCidadeDoador", 0] },
-      estado: { $arrayElemAt: ["$enderecoDoador.dscUFDoador", 0] },
-      segundoLanche: { $arrayElemAt: ["$dscLancheDoador", 1] }
+    {
+        // 1. Cria um campo temporário, garantindo que dscLancheDoador seja um array [] se for nulo/ausente
+        $addFields: {
+            lanchesValidos: { $ifNull: ["$dscLancheDoador", []] }
+        }
+    },
+    { 
+        // 2. Filtra documentos onde o tamanho do array lanchesValidos é maior que 2
+        $match: { $expr: { $gt: [ { $size: "$lanchesValidos" }, 2 ] } } 
+    },
+    {
+        // 3. Projeta os campos desejados, incluindo o segundo lanche
+        $project: {
+            _id: 0,
+            idDoador: 1,
+            nomDoador: 1,
+            dscEmailDoador: 1,
+            // Projeta a cidade e o estado do primeiro (e único) elemento do array enderecoDoador
+            cidade: { $arrayElemAt: ["$enderecoDoador.dscCidadeDoador", 0] },
+            estado: { $arrayElemAt: ["$enderecoDoador.dscUFDoador", 0] },
+            // Projeta o elemento de índice 1 (o segundo item) de dscLancheDoador
+            segundoLanche: { $arrayElemAt: ["$dscLancheDoador", 1] }
+        }
     }
-  }
 ])
 ```
 
