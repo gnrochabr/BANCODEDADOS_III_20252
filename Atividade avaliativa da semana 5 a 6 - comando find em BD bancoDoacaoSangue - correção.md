@@ -9,7 +9,7 @@
 
 **Comando Completo**
 ```js
-`db.doacao.find().limit(3)`
+db.doacao.find().limit(3)
 ```
 -----
 
