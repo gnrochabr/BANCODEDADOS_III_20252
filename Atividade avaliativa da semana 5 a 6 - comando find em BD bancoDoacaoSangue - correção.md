@@ -6,8 +6,11 @@
 | :--- | :--- |
 | `db.doacao.find()` | Inicia a consulta na coleção `doacao`. |
 | `.limit(3)` | Limita o conjunto de resultados a retornar apenas os **3 primeiros** documentos. |
-| **Comando Completo** | `db.doacao.find().limit(3)` |
 
+**Comando Completo**
+```js
+`db.doacao.find().limit(3)`
+```
 -----
 
 ### 2. Mostrar os doadores que moram nos estados do **Ceará, Alagoas ou São Paulo**, e que tenham tipo sanguíneo **A ou O**, listando código, nome, cidade, estado e tipo sanguíneo.
@@ -23,9 +26,8 @@
 | `     "enderecoDoador.dscCidadeDoador": 1, ` | Inclui a cidade, usando **ponto-notação** para campos dentro do array de endereço. |
 | `     "enderecoDoador.dscUFDoador": 1, indTipoSangDoador: 1, _id: 0 ` | Inclui o estado e o tipo sanguíneo, e **exclui** o campo `_id` (`0`). |
 
-| **Comando Completo** | 
-javascript```
-
+**Comando Completo**
+```js
 db.doador.find(
 {
 $and: [
@@ -43,7 +45,7 @@ indTipoSangDoador: 1,
 }
 )
 ```
-````|
+
 
 ---
 
@@ -58,7 +60,10 @@ indTipoSangDoador: 1,
 | `  idDoador: 1, nomDoador: 1,` | Inclui código e nome. |
 | `  "enderecoDoador.dscCidadeDoador": 1,` | Inclui a cidade. |
 | `  indTipoSangDoador: 1, indFatoRhDoador: 1, _id: 0` | Inclui tipo sanguíneo e Rh, e exclui `_id`. |
-| **Comando Completo** | ```javascript
+
+
+**Comando Completo**
+```js
 db.doador.find(
   {
     "indTipoSangDoador": { $in: ["A", "B", "O"] },
@@ -73,8 +78,7 @@ db.doador.find(
     _id: 0
   }
 )
-``` |
-
+```
 ---
 
 ### 4. Listar código, quantidade de sangue doada e data das doações feitas **entre janeiro e julho de 2021** e **acima de 690 ml**.
@@ -89,7 +93,12 @@ db.doador.find(
 | `  qtdSangueDoada: { $gt: 690 }` | Filtra a quantidade de sangue **maior que** (**`$gt`**) 690 ml. |
 | `}, {` | Abre a projeção. |
 | `  idDoacao: 1, qtdSangueDoada: 1, datDoacao: 1, _id: 0` | Inclui os campos solicitados e exclui `_id`. |
-| **Comando Completo** | ```javascript
+
+
+**Comando Completo**
+```js
+`db.doacao.find().limit(3)`
+
 db.doacao.find(
   {
     datDoacao: {
@@ -105,7 +114,8 @@ db.doacao.find(
     _id: 0
   }
 )
-``` |
+```
+
 
 ---
 
@@ -120,7 +130,9 @@ db.doacao.find(
 | `  idDoador: 1, nomDoador: 1, dscEmailDoador: 1,` | Inclui código, nome e email. |
 | `  "enderecoDoador.dscCidadeDoador": 1,` | Inclui a cidade. |
 | `  dscLancheDoador: 1` | Inclui o array completo de lanches. O campo `_id` é incluído por padrão. |
-| **Comando Completo** | ```javascript
+
+**Comando Completo**
+```js
 db.doador.find(
   {
     "indTipoSangDoador": { $in: ["A", "B", "AB"] },
@@ -134,9 +146,7 @@ db.doador.find(
     dscLancheDoador: 1
   }
 )
-``` |
-
----
+```
 
 ### 6. Pesquisar se é possível selecionar o **segundo lanche** do doador que teve mais de dois lanches, utilizando o comando `find`.
 
@@ -149,7 +159,9 @@ db.doador.find(
 | `  { $project: {` | **Estágio 2 (`$project`):** Remodela o documento. |
 | `    segundoLanche: { $arrayElemAt: ["$dscLancheDoador", 1] },` | Usa o operador **`$arrayElemAt`** para criar um novo campo chamado `segundoLanche`, extraindo o elemento no **índice 1** (o segundo item). |
 | `    idDoador: 1, nomDoador: 1, _id: 0` | Inclui os demais campos. |
-| **Comando Completo** | ```javascript
+
+**Comando Completo**
+```js
 // Resposta: Não é possível com find(). O correto seria:
 db.doador.aggregate([
   { $match: { "dscLancheDoador": { $size: { $gt: 2 } } } },
@@ -165,7 +177,7 @@ db.doador.aggregate([
     }
   }
 ])
-``` |
+```
 
 ---
 
@@ -181,7 +193,9 @@ db.doador.aggregate([
 | `  qtdSangueDoada: { $gt: 690 }` | Filtra a quantidade de sangue **maior que** 690 ml. |
 | `}, {` | Abre a projeção. |
 | `  idDoacao: 1, datDoacao: 1, qtdSangueDoada: 1, _id: 0` | Inclui os campos solicitados e exclui `_id`. |
-| **Comando Completo** | ```javascript
+
+**Comando Completo**
+```js
 db.doacao.find(
   {
     datDoacao: {
@@ -197,7 +211,7 @@ db.doacao.find(
     _id: 0
   }
 )
-``` |
+```
 
 ---
 
@@ -215,7 +229,9 @@ db.doacao.find(
 | `  "enderecoDoador.dscBairroDoador": 1,` | Inclui o bairro usando ponto-notação. |
 | `  "enderecoDoador.dscCidadeDoador": 1,` | Inclui a cidade. |
 | `  "enderecoDoador.dscUFDoador": 1, dscLancheDoador: 1, _id: 0` | Inclui o estado e o lanche, e exclui `_id`. |
-| **Comando Completo** | ```javascript
+
+**Comando Completo**
+```js
 db.doador.find(
   {
     indSexoDoador: " F",
@@ -233,7 +249,7 @@ db.doador.find(
     _id: 0
   }
 )
-``` |
+```
 
 ---
 
@@ -248,7 +264,9 @@ db.doador.find(
 | `}, {` | Abre a projeção. |
 | `  idDoador: 1, nomDoador: 1,` | Inclui código e nome. |
 | `  enderecoDoador: 1, _id: 0` | Inclui o **array de subdocumentos** `enderecoDoador` completo e exclui `_id`. |
-| **Comando Completo** | ```javascript
+
+**Comando Completo**
+```js
 db.doador.find(
   {
     indSexoDoador: " F",
@@ -262,7 +280,4 @@ db.doador.find(
     _id: 0
   }
 )
-``` |
-
----
-````
+```
