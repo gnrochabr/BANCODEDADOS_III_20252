@@ -51,7 +51,7 @@ db.doador.aggregate([
 ```javascript
 db.doador.aggregate([
   { 
-    $match: { indSexoDoador: "F" } // Filtra apenas os doadores do sexo feminino
+    $match: { indSexoDoador: " F" } // Filtra apenas os doadores do sexo feminino
   },
   { 
     $count: "totalFeminino" // Conta quantos documentos passaram pelo filtro
