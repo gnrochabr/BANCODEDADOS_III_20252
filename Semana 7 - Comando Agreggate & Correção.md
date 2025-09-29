@@ -115,8 +115,8 @@ db.doador.aggregate([
   },
   {
     $group: {
-      _id: "$enderecoDoador.uf", // Agrupa por estado (UF)
-      totalDoacoes: { $sum: 1 }  // Conta quantos doadores existem por estado
+      _id: "$enderecoDoador.dscUFDoador", // Agrupa por estado (UF)
+      totalDoadores: { $sum: 1 }  // Conta quantos doadores existem por estado
     }
   }
 ])
@@ -227,7 +227,7 @@ db.doador.aggregate([
       _id: { 
         sexo: "$indSexoDoador", 
         tipo: "$indTipoSangDoador",
-        estado: "$enderecoDoador.uf"
+        estado: "$enderecoDoador.dscUFDoador:"
       }, // Agrupa por múltiplos campos
       total: { $sum: 1 } // Conta quantos doadores existem em cada combinação
     }
