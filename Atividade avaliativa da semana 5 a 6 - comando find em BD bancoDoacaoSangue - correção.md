@@ -41,7 +41,7 @@ nomDoador: 1,
 "enderecoDoador.dscCidadeDoador": 1,
 "enderecoDoador.dscUFDoador": 1,
 indTipoSangDoador: 1,
-\_id: 0
+_id: 0
 }
 )
 ```
