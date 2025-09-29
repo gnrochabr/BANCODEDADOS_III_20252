@@ -465,6 +465,4 @@ sangue dos estados de Ceará, São Paulo, Espírito Santo e Rio de Janeiro.
 
 ---
 
-##Bons estudos!
-
-
+## Bons estudos!
