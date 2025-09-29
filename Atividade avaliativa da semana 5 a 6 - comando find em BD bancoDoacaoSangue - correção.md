@@ -24,7 +24,7 @@
 | `     "enderecoDoador.dscUFDoador": 1, indTipoSangDoador: 1, _id: 0 ` | Inclui o estado e o tipo sanguíneo, e **exclui** o campo `_id` (`0`). |
 
 | **Comando Completo** | 
-javascript'''
+javascript```
 
 db.doador.find(
 {
@@ -42,7 +42,7 @@ indTipoSangDoador: 1,
 \_id: 0
 }
 )
-'''
+```
 ````|
 
 ---
