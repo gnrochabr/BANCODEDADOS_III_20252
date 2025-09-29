@@ -73,7 +73,7 @@ db.doacao.aggregate([
   {
     $group: {
       _id: "$idDoador",           // Agrupa por doador
-      mediaDoacoes: { $avg: "$quantidadeDoacao" } // Calcula a média das doações
+      mediaDoacoes: { $avg: "$qtdSangueDoada" } // Calcula a média das doações
     }
   }
 ])
@@ -93,7 +93,7 @@ db.doacao.aggregate([
   {
     $group: {
       _id: "$idDoador",             // Agrupa por doador
-      maxDoacoes: { $max: "$quantidadeDoacao" } // Encontra a maior doação
+      maxDoacoes: { $max: "$qtdSangueDoada" } // Encontra a maior doação
     }
   }
 ])
@@ -136,7 +136,7 @@ db.doacao.aggregate([
   {
     $group: {
       _id: "$idDoador",                 // Agrupa por doador
-      totalDoacoes: { $sum: "$quantidadeDoacao" } // Soma todas as doações de cada doador
+      totalDoacoes: { $sum: "$qtdSangueDoada" } // Soma todas as doações de cada doador
     }
   },
   { 
@@ -159,7 +159,7 @@ db.doacao.aggregate([
   {
     $group: {
       _id: "$idDoador",                 // Agrupa por doador
-      totalDoacoes: { $sum: "$quantidadeDoacao" } // Soma total das doações
+      totalDoacoes: { $sum: "$qtdSangueDoada" } // Soma total das doações
     }
   },
   { 
