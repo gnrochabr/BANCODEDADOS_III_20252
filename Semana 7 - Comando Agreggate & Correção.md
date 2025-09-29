@@ -255,16 +255,59 @@ db.doador.aggregate([
 ```javascript
 db.doador.aggregate([
   {
+    // Realiza uma junção entre a coleção de doadores e doações
+    // Cria um array "minhasDoacoes" contendo todas as doações de cada doador
     $lookup: {
-      from: "doacao", 
-      localField: "idDoador", 
-      foreignField: "idDoador", 
+      from: "doacao",          // Coleção com as doações
+      localField: "idDoador",  // Campo do doador na coleção doador
+      foreignField: "idDoador",// Campo correspondente na coleção doacao
+      as: "minhasDoacoes"      // Nome do array resultante
+    }
+  },
+  {
+    // Adiciona um novo campo "ultimaDoacao"
+    // $max vai buscar a data máxima dentro do array "minhasDoacoes.datDoacao"
+    $addFields: {
+      ultimaDoacao: { $max: "$minhasDoacoes.datDoacao" }
+    }
+  },
+  {
+    // Projeta apenas os campos que queremos exibir
+    $project: {
+      _id: 0,                 // Exclui o _id
+      nomDoador: 1,           // Nome do doador
+      dscEmailDoador: 1,      // Email do doador
+      ultimaDoacao: 1          // Data da última doação
+    }
+  },
+  {
+    // Ordena os resultados pela última doação, do mais recente para o mais antigo
+    $sort: { ultimaDoacao: -1 }
+  }
+])
+
+```
+Ou podemos deixar apenas a data sendo exibida no resultado (sem ISODate):
+
+```javascript
+db.doador.aggregate([
+  {
+    $lookup: {
+      from: "doacao",
+      localField: "idDoador",
+      foreignField: "idDoador",
       as: "minhasDoacoes"
     }
   },
   {
     $addFields: {
-      ultimaDoacao: { $max: "$minhasDoacoes.dataDoacao" } // Calcula a data da última doação
+      // Converte a data da última doação para string no formato YYYY-MM-DD
+      ultimaDoacao: { 
+        $dateToString: { 
+          format: "%Y-%m-%d", 
+          date: { $max: "$minhasDoacoes.datDoacao" } 
+        } 
+      }
     }
   },
   {
@@ -276,7 +319,7 @@ db.doador.aggregate([
     }
   },
   {
-    $sort: { ultimaDoacao: -1 } // Ordena do mais recente para o mais antigo
+    $sort: { ultimaDoacao: -1 }
   }
 ])
 ```
