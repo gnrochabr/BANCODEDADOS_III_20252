@@ -327,6 +327,8 @@ db.doador.aggregate([
 **Explicação detalhada:**
 
 * Combina `$lookup` + `$addFields` para **incluir cálculo baseado em arrays** (data da última doação).
+* $dateToString transforma o valor de Date em texto formatado.
+* format: "%Y-%m-%d" garante que só apareça ano-mês-dia (2025-09-29), sem hora nem ISODate.
 * `$project` seleciona apenas informações úteis (nome, e-mail e data da última doação).
 * `$sort` ordena os doadores **pela recência da última doação**, útil para campanhas de doação ou acompanhamento.
 * Demonstra como combinar agregações, cálculos e projeções para análises **complexas e práticas**.
